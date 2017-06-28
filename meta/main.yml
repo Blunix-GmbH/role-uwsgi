@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Brian Wiborg
+  company: Blunix GmbH
+  license: Apache
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: Debian
+    versions:
+    - jessie
+
+  galaxy_tags:
+    - blunix
+    - uwsgi
+
+dependencies:
+  - blunix.role-python

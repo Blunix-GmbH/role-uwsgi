@@ -1,0 +1,4 @@
+[uwsgi]
+{% for option in uwsgi_app['options'] %}
+{{ option }} = {{ uwsgi_app['options'][option] }}
+{% endfor %}

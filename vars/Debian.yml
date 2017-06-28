@@ -1,0 +1,3 @@
+---
+uwsgi_package_name: uwsgi
+uwsgi_service_name: uwsgi

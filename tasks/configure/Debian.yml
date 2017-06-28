@@ -1,0 +1,12 @@
+---
+- name: configure uSWGI client - {{ uwsgi_app }}
+  template:
+    src: etc/uwsgi/app.ini.j2
+    dest: /etc/uwsgi/apps-enabled/{{ uwsgi_app['name'] }}.ini
+    owner: root
+    group: root
+    mode: 0644
+  with_items: '{{ uwsgi_apps }}'
+  loop_control:
+    loop_var: uwsgi_app
+  notify: restart uwsgi
