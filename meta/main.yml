@@ -16,5 +16,4 @@ galaxy_info:
     - blunix
     - uwsgi
 
-dependencies:
-  - blunix.role-python
+dependencies: []
