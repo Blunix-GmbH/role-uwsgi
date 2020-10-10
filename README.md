@@ -1,51 +1,27 @@
-Ansible Role uWSGI
-=========
+# blunix_role-uwsgi
+This Ansible role installs and configures uwsgi.
 
-Installs and configures uWSGI daemon.
+This role is part of the Blunix hosting stack. Learn how to use it at <a href="https://man.blunix.com/" target="_blank">man.blunix.com</a>.
 
-This playbook highly values the KISS methodology - Keep It Simple Stupid.
+# Author Information
+Blunix GmbH - Consulting for Linux Hosting 24/7
 
-- only takes care of uWSGI service installation and configuration -
-  deployments would have to go in an extra play/role with a dep on this role.
-- supports only a single uwsgi client - if you want to configure more clients, run this
-  role multiple times while passing the corresponding facts.
-
-Example Playbook
-----------------
-
-    - hosts: all
-      vars:
-        uwsgi_enabled: yes
-        uwsgi_apps:
-          - name: example_com
-            options:
-              socket: 127.0.0.1:3031
-              chdir: /var/www/example_com
-              virtualenv: venv
-              python-path: ..
-              module: example_com:application
-              processes: 4
-              threads: 2
-              stats: 127.0.0.1:9191
-              master: true
-      roles:
-         - blunix.role-uwsgi
-
-License
--------
-
-Apache
-
-Author Information
-------------------
-
-Service and support for orchestrated hosting environments, continuous integration/deployment/delivery and various Linux and open-source technology stacks are available from:
+Blunix GmbH provides 24/7 support with Service Level Agreements for Debian Linux based hosting environments which are automated with Ansible.
 
 ```
-Blunix GmbH - Professional Linux Service
+Blunix GmbH
 Glogauer Straße 21
-10999 Berlin - Germany
+10999 Berlin
+Germany
 
-Web: www.blunix.org
-Email: mailto:service@blunix.org
+Website: https://www.blunix.com
+E-Mail:  contact@blunix.com
+gpg key: https://www.blunix.com/contact-blunix-com-gpg-key
+Signal:  +49 30 629 318 76
+Matrix:  #blunix:matrix.org
 ```
+
+# License
+Apache-2.0
+
+Please refer to the LICENSE file in the root of this repository.

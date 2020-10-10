@@ -1,10 +1,9 @@
----
-- name: reload uwsgi
-  service:
-    name: '{{ uwsgi_service_name }}'
-    state: reloaded
+- name: reload systemd
+  systemd:
+    daemon_reload: True
 
-- name: restart uwsgi
-  service:
-    name: '{{ uwsgi_service_name }}'
+- name: "restart uwsgi@{{ uwsgi_app_name }}"
+  systemd:
+    name: "uwsgi@{{ uwsgi_app_name }}"
     state: restarted
+    enabled: True

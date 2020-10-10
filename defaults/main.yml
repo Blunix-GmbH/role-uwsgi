@@ -1,3 +1,2 @@
----
-uwsgi_enabled: no
-uwsgi_apps: []
+uwsgi_ini_template: templates/uwsgi.ini.j2
+uwsgi_systemd_custom_settings: []

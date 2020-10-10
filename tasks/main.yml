@@ -1,5 +1,37 @@
----
-- include: uwsgi.yml
-  when: uwsgi_enabled
-  tags:
-    - uwsgi
+- name: install required packages
+  apt:
+    name:
+      - python3-dev
+      - python3-venv
+      # for ansible become
+      - acl
+    state: present
+
+- name: "install uwsgi in virtualenv {{ uwsgi_virtualenv_path }}"
+  pip:
+    name: uWSGI
+    version: "{{ uwsgi_pip_version }}"
+    virtualenv: "{{ uwsgi_virtualenv_path }}"
+  become: True
+  become_user: "{{ uwsgi_user }}"
+  notify: "restart uwsgi@{{ uwsgi_app_name }}"
+
+- name: "template {{ uwsgi_ini_template }}"
+  template:
+    src: "{{ uwsgi_ini_template }}"
+    dest: "{{ uwsgi_ini_path }}"
+    owner: "{{ uwsgi_user }}"
+    group: "{{ uwsgi_group }}"
+    mode: 0640
+  notify: "restart uwsgi@{{ uwsgi_app_name }}"
+
+- name: "template systemd uwsgi@{{ uwsgi_app_name }}.service"
+  template:
+    src: templates/etc/systemd/system/uwsgi.service.j2
+    dest: "/etc/systemd/system/uwsgi@{{ uwsgi_app_name }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - reload systemd
+    - "restart uwsgi@{{ uwsgi_app_name }}"

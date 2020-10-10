@@ -1,0 +1,26 @@
+[Unit]
+Description=uwsgi {{ uwsgi_app_name }}
+After=network.target
+
+[Service]
+Type=simple
+User={{ uwsgi_user }}
+PIDFile={{ uwsgi_pid_path }}
+ExecStartPre=/bin/rm -f {{ uwsgi_pid_path }}
+ExecReload=/bin/echo c > {{ uwsgi_master_fifo_path }}
+KillSignal=SIGQUIT
+TimeoutStopSec=5
+KillMode=process
+WorkingDirectory={{ uwsgi_working_directory }}
+ExecStart={{ uwsgi_virtualenv_path }}/bin/uwsgi --ini {{ uwsgi_ini_path }}
+Restart=on-failure
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=uwsgi_{{ uwsgi_app_name }}
+
+{% for uwsgi_systemd_custom_setting in uwsgi_systemd_custom_settings %}
+{{ uwsgi_systemd_custom_setting }}
+{% endfor %}
+
+[Install]
+WantedBy=multi-user.target

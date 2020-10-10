@@ -1,0 +1,69 @@
+- name: Converge
+  hosts: all
+  become: True
+  roles:
+    - role: role-uwsgi
+  vars:
+
+    uwsgi_pip_version: 2.0.19.1
+
+    # Systemd service settings
+    uwsgi_app_name: www_example_com
+    uwsgi_user: www_example_com
+    uwsgi_group: www_example_com
+    uwsgi_working_directory: "/var/www/www_example_com/current"
+    uwsgi_virtualenv_path: "/var/www/www_example_com/venv"
+    uwsgi_ini_path: "/var/www/www_example_com/uwsgi-{{ uwsgi_app_name }}.ini"
+    uwsgi_pid_path: "/var/www/www_example_com/uwsgi-{{ uwsgi_app_name }}.pid"
+    uwsgi_master_fifo_path: "/var/www/www_example_com/uwsgi-{{ uwsgi_app_name }}-master.sock"
+
+    # Custom systemd settings
+    uwsgi_systemd_custom_settings:
+      - Environment=NEW_RELIC_CONFIG_FILE=/var/www/www_example_com/config/newrelic.ini
+
+    # Use a custom template for uwsgi.ini
+    uwsgi_ini_template: templates/uwsgi.ini.j2
+
+
+
+  # Create user with virtualenv to install uwsgi in (only for molecule)
+  pre_tasks:
+
+    - name: install required packages
+      apt:
+        name:
+          - python3-dev
+          - python3-pip
+          - python3-venv
+          - acl
+        state: present
+
+    - name: create /var/www
+      file:
+        path: /var/www
+        state: directory
+
+    - name: "create group {{ uwsgi_group }}"
+      group:
+        name: "{{ uwsgi_group }}"
+
+    - name: "create user {{ uwsgi_user }}"
+      user:
+        name: "{{ uwsgi_user }}"
+        group: "{{ uwsgi_group }}"
+        home: "/var/www/www_example_com"
+
+    - name: create /var/www/www_example_com/current
+      file:
+        path: "/var/www/www_example_com/current"
+        state: directory
+        owner: "{{ uwsgi_user }}"
+        group: "{{ uwsgi_group }}"
+        mode: 0750
+
+    - name: "create virtualenv {{ uwsgi_virtualenv_path }}"
+      pip:
+        name: uWSGI
+        version: "{{ uwsgi_pip_version }}"
+        virtualenv: "{{ uwsgi_virtualenv_path }}"
+        virtualenv_command: /usr/bin/python3 -m venv
